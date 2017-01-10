@@ -39,11 +39,11 @@ def Callback_Returned_To_Dict(x):
 
 def Get_Authorization_Code():
     ''' Redirect QQ Landing Page URL '''
-    return Splice(scheme="https", domain="graph.qq.com", path="/oauth2.0/authorize", query={"response_type": "code", "client_id": QQ_APP_ID, "redirect_uri": REDIRECT_URI, "scope": "get_user_info"}).geturl
+    return Splice(scheme="https", netloc="graph.qq.com", path="/oauth2.0/authorize", query={"response_type": "code", "client_id": QQ_APP_ID, "redirect_uri": REDIRECT_URI, "scope": "get_user_info"}).geturl
 
 def Get_Access_Token(code):
     ''' Authorization Code cannot repeat '''
-    Get_Access_Token_Url = Splice(scheme="https", domain="graph.qq.com", path="/oauth2.0/token", query={"grant_type": "authorization_code", "client_id": QQ_APP_ID, "client_secret": QQ_APP_KEY, "code": code, "state": "P.passport", "redirect_uri": REDIRECT_URI}).geturl
+    Get_Access_Token_Url = Splice(scheme="https", netloc="graph.qq.com", path="/oauth2.0/token", query={"grant_type": "authorization_code", "client_id": QQ_APP_ID, "client_secret": QQ_APP_KEY, "code": code, "state": "P.passport", "redirect_uri": REDIRECT_URI}).geturl
     access_token_data = requests.get(Get_Access_Token_Url, timeout=timeout, verify=verify).text
 
     try:
@@ -60,7 +60,7 @@ def Get_Access_Token(code):
 
 def Update_Access_Token(refresh_token):
     '''Update some required parameters for OAuth2.0 API calls'''
-    Update_Access_Token_Url = Splice(scheme="https", domain="graph.qq.com", path="/oauth2.0/token", query={"grant_type": "refresh_token", "client_id": QQ_APP_ID, "client_secret": QQ_APP_KEY, "refresh_token": refresh_token}).geturl
+    Update_Access_Token_Url = Splice(scheme="https", netloc="graph.qq.com", path="/oauth2.0/token", query={"grant_type": "refresh_token", "client_id": QQ_APP_ID, "client_secret": QQ_APP_KEY, "refresh_token": refresh_token}).geturl
     access_token_data = requests.get(Update_Access_Token_Url, timeout=timeout, verify=verify).text
 
     try:
@@ -76,14 +76,14 @@ def Update_Access_Token(refresh_token):
         raise
 
 def Get_OpenID(access_token):
-    Get_OpenID_Url = Splice(scheme="https", domain="graph.qq.com", path="/oauth2.0/me", query={"access_token": access_token}).geturl
+    Get_OpenID_Url = Splice(scheme="https", netloc="graph.qq.com", path="/oauth2.0/me", query={"access_token": access_token}).geturl
     openid_data = requests.get(Get_OpenID_Url, timeout=timeout, verify=verify).text
 
     #Should returned right data, such as {"client_id":"100581101","openid":"AF8AA7E0F77451736DD97FB796849024"}
     return Callback_Returned_To_Dict(openid_data)
 
 def Get_User_Info(access_token, openid):
-    Get_User_Info_Url = Splice(scheme="https", domain="graph.qq.com", path="/user/get_user_info", query={"access_token": access_token, "oauth_consumer_key": QQ_APP_ID, "openid": openid}).geturl
+    Get_User_Info_Url = Splice(scheme="https", netloc="graph.qq.com", path="/user/get_user_info", query={"access_token": access_token, "oauth_consumer_key": QQ_APP_ID, "openid": openid}).geturl
     return requests.get(Get_User_Info_Url, timeout=timeout, verify=verify).json()
 
 @app.before_request

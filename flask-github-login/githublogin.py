@@ -24,11 +24,11 @@ def Parse_Access_Token(x):
 
 def Get_Authorization_Code():
     ''' Redirect GitHub Landing Page URL '''
-    return Splice(scheme="https", domain="github.com", path="/login/oauth/authorize", query={"client_id": GITHUB_APP_ID, "redirect_uri": REDIRECT_URI}).geturl
+    return Splice(scheme="https", netloc="github.com", path="/login/oauth/authorize", query={"client_id": GITHUB_APP_ID, "redirect_uri": REDIRECT_URI}).geturl
 
 def Get_Access_Token(code):
     ''' Authorization Code cannot repeat '''
-    Get_Access_Token_Url = Splice(scheme="https", domain="github.com", path="/login/oauth/access_token", query={"client_id": GITHUB_APP_ID, "client_secret": GITHUB_APP_KEY, "code": code, "redirect_uri": REDIRECT_URI}).geturl
+    Get_Access_Token_Url = Splice(scheme="https", netloc="github.com", path="/login/oauth/access_token", query={"client_id": GITHUB_APP_ID, "client_secret": GITHUB_APP_KEY, "code": code, "redirect_uri": REDIRECT_URI}).geturl
     access_token_data = requests.post(Get_Access_Token_Url, timeout=timeout, verify=verify).text
 
     data = Parse_Access_Token(access_token_data)
@@ -40,7 +40,7 @@ def Get_Access_Token(code):
         raise ServerError("Get Access Token Error with Authorization Code")
 
 def Get_User_Info(access_token):
-    Get_User_Info_Url = Splice(scheme="https", domain="api.github.com", path="/user", query={"access_token": access_token}).geturl
+    Get_User_Info_Url = Splice(scheme="https", netloc="api.github.com", path="/user", query={"access_token": access_token}).geturl
     return requests.get(Get_User_Info_Url, timeout=timeout, verify=verify).json()
 
 @app.before_request

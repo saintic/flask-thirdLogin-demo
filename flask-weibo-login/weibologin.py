@@ -17,15 +17,15 @@ verify  = False
 
 def Get_Authorization_Code():
     ''' Redirect Weibo Landing Page URL '''
-    return Splice(scheme="https", domain="api.weibo.com", path="/oauth2/authorize", query={"response_type": "code", "client_id": WEIBO_APP_ID, "redirect_uri": REDIRECT_URI}).geturl
+    return Splice(scheme="https", netloc="api.weibo.com", path="/oauth2/authorize", query={"response_type": "code", "client_id": WEIBO_APP_ID, "redirect_uri": REDIRECT_URI}).geturl
 
 def Get_Access_Token(code):
     ''' Authorization Code cannot repeat '''
-    Access_Token_Url = Splice(scheme="https", domain="api.weibo.com", path="/oauth2/access_token", query={"grant_type": "authorization_code", "client_id": WEIBO_APP_ID, "client_secret": WEIBO_APP_KEY, "code": code, "redirect_uri": REDIRECT_URI}).geturl
+    Access_Token_Url = Splice(scheme="https", netloc="api.weibo.com", path="/oauth2/access_token", query={"grant_type": "authorization_code", "client_id": WEIBO_APP_ID, "client_secret": WEIBO_APP_KEY, "code": code, "redirect_uri": REDIRECT_URI}).geturl
     return  requests.post(Access_Token_Url, timeout=timeout, verify=verify).json()
 
 def Get_User_Info(access_token, uid):
-    User_Info_Url = Splice(scheme="https", domain="api.weibo.com", path="/2/users/show.json", query={"access_token": access_token, "uid": uid}).geturl
+    User_Info_Url = Splice(scheme="https", netloc="api.weibo.com", path="/2/users/show.json", query={"access_token": access_token, "uid": uid}).geturl
     return requests.get(User_Info_Url, timeout=timeout, verify=verify).json()
 
 @app.before_request
